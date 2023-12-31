@@ -1,10 +1,11 @@
 # code_for_another_session
 
-Command to allow code commands to be executed in ssh'd sessions outside of vscode.
+Command to allow code commands to be executed in ssh'd sessions outside of
+vscode.
 
 ## Requirements
 
-* deno
+- deno
 
 ## Install
 
