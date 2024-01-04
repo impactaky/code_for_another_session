@@ -10,13 +10,15 @@ export async function runner(serverDir: string, serverName: string) {
     Deno.exit(1);
   }
 
-  const sockets = $.path(`/run/user/${Deno.uid()}`).expandGlob(
-    "vscode-ipc-*.sock",
+  const socketDir = $.path(`/run/user/${Deno.uid()}`);
+  const sockets = $`ls -t ${socketDir}`.filter((l) =>
+    l.startsWith("vscode-ipc-")
   );
   for await (const socket of sockets) {
-    const result =
-      await $`VSCODE_IPC_HOOK_CLI=${socket.path} ${script} ${Deno.args}`
-        .noThrow().stderr("null");
+    const result = await $`VSCODE_IPC_HOOK_CLI=${
+      socketDir.join(socket)
+    } ${script} ${Deno.args}`
+      .noThrow().stderr("null");
     if (result.code == 0) Deno.exit(0);
   }
   console.error("Failed on all sockets");
